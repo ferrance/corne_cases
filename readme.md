@@ -1,4 +1,4 @@
-!(images/corne_feet.jpg)
+![image of crkbd](images/corne_feet.jpg)
 
 These are the various ways I have built my [corne keyboads](https://github.com/foostan/crkbd).
 

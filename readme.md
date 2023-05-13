@@ -1,4 +1,6 @@
-These are the various ways I have built my corne keyboads.
+!(images/corne_feet.jpg)
+
+These are the various ways I have built my [corne keyboads](https://github.com/foostan/crkbd).
 
 # Source files
 
@@ -28,5 +30,10 @@ The scad file generates all of the other STLs.
   need to travel with. You can dial in an appropriate amount of
   tent and tilt in the SCAD file; 5x5 just happens to work nicely
   for me.
+  
+- corne_feet.stl
+
+  These are small feet which attach via magnets to the magnetic
+  bottom plate to provide some tenting.
 
 

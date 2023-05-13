@@ -7,7 +7,7 @@ The project can be built from 3 files:
 - cherryplate.stl
 - backplate_nofeet.stl
 
-The two STLs come from:
+The two STLs come from: https://thingiverse.com/thing:4459741
 
 The scad file generates all of the other STLs.
 
@@ -24,5 +24,9 @@ The scad file generates all of the other STLs.
 - base_plate_5x5.stl
 
   a base plate with 5 degrees of tent ant 5 degrees of tilt.
+  It does not use magnets. It is best for keebs that you don't 
+  need to travel with. You can dial in an appropriate amount of
+  tent and tilt in the SCAD file; 5x5 just happens to work nicely
+  for me.
 
 

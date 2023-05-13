@@ -108,7 +108,7 @@ module magnets() {
 
 }
 
-module cherryplate() {
+module top_plate() {
     difference() {
 
         translate([4,2,4.5]) rotate([0,180,0])
@@ -121,6 +121,8 @@ module cherryplate() {
             mirror([0,0,1]) 
                 screw_holes(HT=5,R2=2);        
         
+        // makes sure there is nothing below zero
+        translate([0,0,-5]) linear_extrude(5) square(200);
             
     } // diff
         
@@ -335,7 +337,15 @@ module flat_magnets(ht=3,tent=0,tilt=0) {
 // it can be thinner. but it is less adjustable. 
 //
 //base_plate(); // flat base plate with magnets
-//base_plate(3.5,5,5,false,-4); // tented,tilted plate w/o mags
+base_plate(3.5,5,5,false,-4); // tented,tilted plate w/o mags
+
+// The top plate for cherry mx switches
+// The only thing this changes from the original is to
+// counterbore instead of countersinking the screws, since
+// I found it hard to keep the standoffs at right angles to 
+// the plate with the original design.
+//
+//top_plate();
 
 
 // for testing:
@@ -344,11 +354,7 @@ module flat_magnets(ht=3,tent=0,tilt=0) {
 //translate([0,0,BASE_THICKNESS]) mirror([0,0,1]) screw_holes(HT=BASE_THICKNESS);
 //magnets();
 //mirror([0,0,1]) magnets();
-
 //hex_grid(45);
 
-difference() {
-    cherryplate();
-    translate([0,0,-5]) linear_extrude(5) square(200);
-}
+
 

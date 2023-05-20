@@ -15,6 +15,7 @@
 $fn=50;
 
 BASE_THICKNESS = 3.5;    // per slicer, measured is as high as 3.9, sigh
+TOP_THICKNESS  = 4.5;    // ht of top plate
 MAG_H = 2.6;  // measured ht of magnets 
 
 // sine wave used to make the feet look nicer
@@ -35,6 +36,21 @@ module hex_grid(ht) {
             translate([x*(2*CR+D) + (y%2)*(CR+D/2), y*(2*CR)*.9,0])
             color("blue") rotate([0,0,30]) cylinder(r=CR, h=ht, $fn=6);
         }
+    }
+}
+
+// a helper that rotates and translates, then chops off 
+// everything below z=0
+//
+module chop(t=[0,0,0],r=[0,0,0])
+{
+    HT = 100;
+    difference() {
+        translate(t)
+        rotate(r)
+
+        children();
+        color("red") translate([-50,-50,-HT]) linear_extrude(HT) square(500);
     }
 }
 
@@ -111,15 +127,20 @@ module magnets() {
 module top_plate() {
     difference() {
 
+        union() {
         translate([4,2,4.5]) rotate([0,180,0])
             translate([0, 31, 0 ]) 
                 mirror([0,1,0])
                     import("cherryplate.stl");
-
+            screw_holes(HT=4.5, R=2.6, R2=2.6);
+        }
+        
         // widen the screw holes
+        // but don't inset them, it isn't necessary and it
+        // complicates the printing
         translate([0,0,5]) 
             mirror([0,0,1]) 
-                screw_holes(HT=5,R2=2);        
+                screw_holes(HT=5,R=1.3, R2=1.3);        
         
         // makes sure there is nothing below zero
         translate([0,0,-5]) linear_extrude(5) square(200);
@@ -336,8 +357,8 @@ module flat_magnets(ht=3,tent=0,tilt=0) {
 // It does not require magnets and a separate base, so
 // it can be thinner. but it is less adjustable. 
 //
-//base_plate(); // flat base plate with magnets
-base_plate(3.5,5,5,false,-4); // tented,tilted plate w/o mags
+base_plate(); // flat base plate with magnets
+//base_plate(3.5,5,5,false,-4); // tented,tilted plate w/o mags
 
 // The top plate for cherry mx switches
 // The only thing this changes from the original is to

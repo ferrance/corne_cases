@@ -1,4 +1,4 @@
-![image of crkbd](images/corne_feet.jpg)
+![image of crkbd](/images/corne_feet.jpg)
 
 These are the various ways I have built my [corne keyboads](https://github.com/foostan/crkbd).
 
@@ -17,11 +17,15 @@ The scad file generates all of the other STLs.
 
 - keyplate.stl
 
-  the top plate that the cherry mx switches fit in
+  the top plate that the cherry mx switches fit in. It does not
+  matter what top plate you use, you can use the rest of these STLs
+  with any top plate, even an FR4 or an acrylic plate.
 
 - base_plate_flat.stl
 
-  flat bottom plate with holes for 4 magnets. 
+  flat bottom plate with holes for 4 magnets. This is 
+  the bottom plate to attach to keyplate.stl if you want
+  to use the magnetic attachments.
 
 - base_plate_5x5.stl
 

@@ -7,6 +7,8 @@
 //               got rid of the two middle magnets
 // 2023 03 22    refactor everything, make a base plate with tent/tilt w/o magnets
 //
+// 2023 05 26    cleaning up the code
+//
 // Assumes these files are present:
 //   - backplate_nofeet.stl (3.5mm tall)
 //   - cherryplate.stl (4.5mm tall)
@@ -27,6 +29,7 @@ function sinewave(radius,length,waves) = [
                 
     ];
 
+// grid of hexagons to subtract from things
 module hex_grid(ht) {
     CR = 10;
     D = 3;
@@ -69,28 +72,15 @@ module chop(t=[0,0,0],r=[0,0,0])
 //   R2 = outer diameter
 module screw_holes(R=1.3, R2=3, HT=25) {
     OFS = BASE_THICKNESS-1.5;
+    HOLES = [ [20.4,49.4], [20.5,68.6], [96.5,72.1], 
+              [63.7,32.4], [110.2,24.5]
+    ];
     
-    translate([20.4,49.4,0]) {
-        color("blue") cylinder(r=R, h=HT);
-        color("green") cylinder(r=R2, h=HT-OFS);
-    }
-    translate([20.5,68.6,0]) {
-        color("blue") cylinder(r=R, h=HT);
-        color("green") cylinder(r=R2, h=HT-OFS);
-    }
-    translate([96.5,72.1,0]) {
-        color("blue") cylinder(r=R, h=HT);
-        color("green") cylinder(r=R2, h=HT-OFS);
-    }
-    
-    translate([63.7,32.4,0]) {
-        color("blue") cylinder(r=R, h=HT);
-        color("green") cylinder(r=R2, h=HT-OFS);
-    }
-    
-    translate([110.2,24.5,0]) {
-        color("blue") cylinder(r=R, h=HT);
-        color("green") cylinder(r=R2, h=HT-OFS);
+    for (h=HOLES) {
+        translate([h[0],h[1],0]) {
+            color("blue") cylinder(r=R, h=HT);
+            color("green") cylinder(r=R2, h=HT-OFS);
+        }
     }
 }    
 
@@ -100,28 +90,16 @@ module magnets() {
     MAG_R = 4.2;  // 4.05 was a a little too tight
     SMALL_R = 1.5;
     BIG = 50;
+    MAGNETS = [[127,36,0], [127,76,0], [10,75,0], [10,42,0]];
     
     // each magnet hole has a hole for the magnet and
     // a thinner hole to facilitate getting the magnet
     // out if the hole is a tight fit
-    translate([127,36,0]) {
-        translate([0,0,MAG_H-BIG]) cylinder(r=MAG_R,h=BIG);
-        cylinder(r=SMALL_R, h=BIG);
-    }
-    translate([127,76,0]) {
-        translate([0,0,MAG_H-BIG]) cylinder(r=MAG_R,h=BIG);
-        cylinder(r=SMALL_R, h=BIG);
-    }
-    translate([10,75,0]) {
-        translate([0,0,MAG_H-BIG]) cylinder(r=MAG_R,h=BIG);
-        cylinder(r=SMALL_R, h=BIG);
-    }
-    
-    translate([10,42,0]) {
-        translate([0,0,MAG_H-BIG]) cylinder(r=MAG_R,h=BIG);
-        cylinder(r=SMALL_R, h=BIG);
-    }
-
+    for(m=MAGNETS)
+        translate(m) {
+            translate([0,0,MAG_H-BIG]) cylinder(r=MAG_R,h=BIG);
+            cylinder(r=SMALL_R, h=BIG);
+        }
 }
 
 module top_plate() {
@@ -151,7 +129,7 @@ module top_plate() {
 }
 
 // this just imports the bottom plate and positions it
-// the bottom plate has screw holes that are a little to
+// the bottom plate has screw holes that are a little tooes
 // small and that are countersunk wrong for the type of 
 // screws I have, so I ended up redoing the holes 
 //
@@ -159,7 +137,7 @@ module top_plate() {
 //
 // this is about 3.9mm thick
 //
-module k3d() {
+module crkbd3d() {
       
     difference() {
 
@@ -176,9 +154,9 @@ module k3d() {
 
 // 2d projection of the botom plate
 // there are no screw holes
-module k2d() {
+module crkbd2d() {
     projection() {
-        k3d();
+        crkbd3d();
        screw_holes(); 
     }
 }
@@ -223,17 +201,12 @@ module wedge(magnets=false) {
 
 }
 
-// a wedge without the lip
-module 1piece_wedge() {
-  difference() {
-    linear_extrude(30) projection() rotate([0,-ANGLE,0]) k3d();
-    rotate([0,-ANGLE,0]) translate([-10,0,0]) linear_extrude(30) square(200);
-    translate([15,0,0])
-        linear_extrude(50) square([102,200]);      
-  }
-}
-
-// cuts off most of the wedge except the part I want
+// these are the feet that attach to the insidbe magnets
+// to provide some tenting
+// 
+// this was my original idea for tenting and portability. it
+// still works but I prefer the full base with the built in magnets now
+//
 module corne_feet(magnets=false) {
     difference() {
         wedge(magnets);
@@ -249,11 +222,8 @@ module corne_feet(magnets=false) {
 // bottom plate with buit in tenting
 module one_piece() {
     //corne_feet();
-    rotate([0,-ANGLE, 0]) k3d();
-    
+    rotate([0,-5, 0]) crkbd3d();
     color("red") 1piece_wedge();
-
-
 }    
 
 
@@ -273,28 +243,22 @@ module one_piece() {
 module base_plate(ht=3,tent=0,tilt=0,MAGNETS=true,ZOFS=0) {
     BIG = 40;
     
-    difference() {
-        
-        translate([0,0,ht-BIG+ZOFS])
-        rotate([tilt,-tent,0])
- 
+    chop(t=[0,0,ht-BIG+ZOFS], r=[tilt, -tent, 0] )
+    { 
         // giant k2d with holes
         difference() {        
-            linear_extrude(BIG) k2d();
+            linear_extrude(BIG) crkbd2d();
             if (MAGNETS) {
                 translate([0,0,BIG-ht]) magnets();
             }
             screw_holes(HT=BIG);
             
-            // remove material for aesthetics and print time
+            // remove material for aesthetics and maybe print time
             if (true) {
                 translate([-18,5,0]) hex_grid(BIG-ht);
             }
         }
- 
-        // chop off everything below z=0
-        translate([-10,-10,-BIG]) linear_extrude(BIG) square(200);
-    }        
+    }  // chop    
 }
 
 // this creates a magnetic attachment that can attach to
@@ -314,26 +278,18 @@ module base_plate(ht=3,tent=0,tilt=0,MAGNETS=true,ZOFS=0) {
 module flat_magnets(ht=3,tent=0,tilt=0) {
     BIG=40;
     
-    difference() {
-        rotate([tilt,-tent,0]) {
-
-            translate([0,0,ht-BIG]) {
-                
-                // make a giant k2d shaped block w holes
-                difference() {
-                    linear_extrude(BIG) k2d();
-                    translate([0,0,BIG]) mirror([0,0,1]) magnets();
-                    translate([18,0,0]) linear_extrude(BIG+1) square([100,200]);
-                }
-                
-                // crossbar
-                translate([18,50,0]) linear_extrude(BIG) square([100,20]);
-            }
+    chop(r=[tilt, -tent, 0], t=[0,0,ht-BIG])
+    {                
+        // make a giant k2d shaped block w holes
+        difference() {
+            linear_extrude(BIG) crkbd2d();
+            translate([0,0,BIG]) mirror([0,0,1]) magnets();
+            translate([18,0,0]) linear_extrude(BIG+1) square([100,200]);
         }
         
-        // chop off everything below z=0
-        translate([0,0,-BIG]) linear_extrude(BIG) square(200);
-    }
+        // add crossbar
+        translate([18,50,0]) linear_extrude(BIG) square([100,20]);
+    } // chop
 }
 
 //uncomment one of these:
@@ -342,16 +298,14 @@ module flat_magnets(ht=3,tent=0,tilt=0) {
 // Right now they create no tilt.
 //corne_feet(magnets=true);  // magnets=false for no magnets
 
-//one_piece();
-
 // This base attaches magnetically to the base plate.
 // It has no snap in borders. Can be configured with
 // different tent and tilt. It is not a great travel 
 // option but it is what I use on my desktop.
 
-//flat_magnets();              // flat magnet base 3mm tall
+//flat_magnets();            // flat magnet base 3mm tall
 //flat_magnets(-1,5,5);      // base plate with tilt and tent
-
+                             // this is my preferred option
 
 // This is a base plate with built in tent and tilt. 
 // It does not require magnets and a separate base, so
@@ -370,8 +324,8 @@ base_plate(); // flat base plate with magnets
 
 
 // for testing:
-//k3d();
-//k2d();
+//crkbd3d();
+//crkbd2d();
 //translate([0,0,BASE_THICKNESS]) mirror([0,0,1]) screw_holes(HT=BASE_THICKNESS);
 //magnets();
 //mirror([0,0,1]) magnets();

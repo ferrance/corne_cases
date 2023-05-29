@@ -103,13 +103,19 @@ module magnets() {
 }
 
 module top_plate() {
+
+    chop() 
     difference() {
 
         union() {
-        translate([4,2,4.5]) rotate([0,180,0])
+            translate([4,2,4.5]) 
+            rotate([0,180,0])
             translate([0, 31, 0 ]) 
                 mirror([0,1,0])
                     import("cherryplate.stl");
+            
+            // fill in the screw holes in the input STL,
+            // we will remove them again below
             screw_holes(HT=4.5, R=2.6, R2=2.6);
         }
         
@@ -119,13 +125,17 @@ module top_plate() {
         translate([0,0,5]) 
             mirror([0,0,1]) 
                 screw_holes(HT=5,R=1.3, R2=1.3);        
+
+        // square off the top edges
+        if (true) {
+            color("green") translate([35,87,0]) linear_extrude(10) square(5);
+            color("green") translate([54,91.8,0]) linear_extrude(10) square(5);
+            color("green") translate([77,91.8,0]) linear_extrude(10) square(5);
+            color("green") translate([96,89.3,0]) linear_extrude(10) square(5);
+        }
         
-        // makes sure there is nothing below zero
-        translate([0,0,-5]) linear_extrude(5) square(200);
-            
     } // diff
         
-    //screw_holes(HT=BASE_THICKNESS);
 }
 
 // this just imports the bottom plate and positions it
@@ -311,7 +321,7 @@ module flat_magnets(ht=3,tent=0,tilt=0) {
 // It does not require magnets and a separate base, so
 // it can be thinner. but it is less adjustable. 
 //
-base_plate(); // flat base plate with magnets
+//base_plate(); // flat base plate with magnets
 //base_plate(3.5,5,5,false,-4); // tented,tilted plate w/o mags
 
 // The top plate for cherry mx switches
@@ -320,7 +330,10 @@ base_plate(); // flat base plate with magnets
 // I found it hard to keep the standoffs at right angles to 
 // the plate with the original design.
 //
-//top_plate();
+difference() {
+    top_plate();
+}
+
 
 
 // for testing:

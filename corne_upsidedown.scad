@@ -25,10 +25,15 @@ module ledge() {
             linear_extrude(3) square([16,34]);
             translate([4,0,0]) linear_extrude(5) square([12,34]);
             
+            if (true) {
             rotate([-90,0,0])
                 linear_extrude(34)
                     polygon([ [0,0], [8,0], [0,8] ]);
-
+            }
+            
+            // alignment
+            translate([6,16.1,1])
+                linear_extrude(5) square([10,1.8]);
         }
         
         // cut out the two holes to mount the lcd
@@ -39,7 +44,15 @@ module ledge() {
             // recess for nut
             //translate([HOLE_OFS,3,-1]) cylinder(r=2.5,h=2,$fn=6);
             //translate([HOLE_OFS,3+28,-1]) cylinder(r=2.5,h=2,$fn=6);
+
+            translate([-1,0,3])
+            rotate([-90,0,0])
+                linear_extrude(35)
+                    polygon([ [0,0], [8,0], [0,8] ]);
+
         }
+
+
         
     } // difference
 }
@@ -95,10 +108,6 @@ module base() {
             translate([120,80,HT-9])
             rotate([-90,0,0])
             linear_extrude(12) square([12,10]);
-
-            // cutout for large oled
-            translate([130,52,HT-3])
-                linear_extrude(10) square([15,18]);
       
         } // difference
         
@@ -128,96 +137,101 @@ module base() {
 }
 
 // holder for the 1.3mm LED
-module led_plate_1_3() {
+module lcd_1_3() {
      
     difference() {
         union() {
             
             // base
-            linear_extrude(1) square([36,34]);
+            linear_extrude(2) square([36,34]);
             
-            // setoffs bcs of stuff on back
+            // setoffs bcs of stuff on back of the lcd
+                        
             
             // left supports
-            translate([0,6,1])
-            linear_extrude(1) square([3,8]);
-            translate([0,20,1])
-            linear_extrude(1) square([3,8]);
+            color("purple") {
+            
+            // top
+            translate([0,31,2])
+                linear_extrude(1) square([36,3]);    
+            
+            translate([0,0,2])
+                linear_extrude(1) square([3,14]);
+            translate([0,20,2])
+                linear_extrude(1) square([3,14]);
             
             // right supports 
-            translate([33,6,1])
-            linear_extrude(1) square([3,8]);
+            translate([33,0,2])
+                linear_extrude(1) square([3,14]);            
+            translate([30,0,2]) linear_extrude(1) square(6);
+                
+            translate([33,20,2])
+                linear_extrude(1) square([3,8]);
+            translate([30,28,2]) linear_extrude(1) square(6);
             
-            translate([33,20,1])
-            linear_extrude(1) square([3,8]);
-            
-            // one for the bottom
-            translate([11,0,1])
-            linear_extrude(3) square([13,3]);
+            // bottom supports
+            translate([11,0,2])
+                linear_extrude(3) square([13,3]);
+            translate([0,0,2])
+                linear_extrude(1) square([36,3]);    
 
             // don't use lower screw hole
-            translate([2.5,3,1]) cylinder(r=1.5,h=3);
-          
-            // raise it up a little
-            // this is dumb because it requires supports
-            // probably should move to the keeb tray once 
-            // everything is dialed in
-            //translate([24,0,-2]) 
-            //linear_extrude(2)
-            //square([12,34]);
-
+            translate([2.5,3+28,2]) cylinder(r=1.5,h=3);
+            translate([2.5,3,2]) cylinder(r=1.5,h=3);
+            }
         }
         
         // cutout for wires
-        translate([12,29,0])
-        linear_extrude(10) square([12,5]);
+        translate([12,29,-0.01])
+            linear_extrude(10) square([12,5]);
         
         // screw holes
-        translate([2.5,3+28,-1]) cylinder(r=1.5,h=50);
-//            translate([2.5,3,-1]) cylinder(r=1.5,h=50);
+//        translate([2.5,3+28,-1]) cylinder(r=1.5,h=50);
+//        translate([2.5,3,-1]) cylinder(r=1.5,h=50);
         translate([2.5+30.5,3,-3]) cylinder(r=1.5,h=50);
         translate([2.5+30.5,3+28,-3]) cylinder(r=1.5,h=50);
 
+        // alignment
+        translate([26,15.8,0])
+            linear_extrude(5) square([10,2.4]);
     }
     
     
 }
  
-module useless() {
-    translate([-100,0,0]) {
-        difference() {
-            linear_extrude(2) square([12,34]);
-            translate([2.5,3+28,-1]) cylinder(r=1.5,h=50);
-            translate([2.5,3,-1]) cylinder(r=1.5,h=50);
-        }
-    }
-}
 
-module clamp1() 
+// holds an m2 nut to attach front plate to pcb
+// needs 4 nuts total (the fifth is blocked)
+module nuts() 
 {
     D1 = 19;
-    R  = 3.5;
+    R  = 4;
     
     difference() 
     {
         union()
         {
-            translate([-R,-R,0])
-                linear_extrude(1) square([7,D1+2*R]);
-            translate([0,0,1]) cylinder(r=R, h=2);
-            translate([0,D1,1]) cylinder(r=R, h=2);
+            //translate([-R,-R,0])
+              //  linear_extrude(1) square([2*R,D1+2*R]);
+
+            translate([0,0,1]) cylinder(r=R, h=3);
+            translate([0,D1,1]) cylinder(r=R, h=3);
         }
         
         cylinder(r=1.2, h=10);
         translate([0,D1,0]) cylinder(r=1.2, h=10);
+
+      // nuts
+      translate([0,0,1]) cylinder(r=2.5,h=1.4,$fn=6);
+      translate([0,D1,1]) cylinder(r=2.5,h=1.4,$fn=6);
 
     } 
     
 }
 
 
-//base();
-//translate([-50,0,0]) led_plate_1_3();
+base();
+//translate([-50,0,0]) lcd_1_3();
 //useless();
 //ledge();
-clamp1();
+//nuts();

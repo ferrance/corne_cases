@@ -11,6 +11,7 @@ $fn=50;
 
 BASE_THICKNESS = 3.5;    // per slicer, measured is as high as 3.9, sigh
 MAG_H = 2.6;  // measured ht of magnets 
+USE_LEDGE = false;
 
 module ledge() {
     ANGLE = 10;
@@ -69,10 +70,12 @@ module base() {
         
         // support for large oled
         // this has to be within the chop block
-        color("blue")
-            translate([133,52.2,HT-6])
-                ledge();
-
+        if (USE_LEDGE) {
+            color("blue")
+                translate([133,52.2,HT-6])
+                    ledge();
+        }
+        
         // everything else
         difference() {
             union() {
@@ -83,9 +86,11 @@ module base() {
 
             // cut out angle so there is room for the lcd
             // mounting plate
-            translate([132,52.2,HT-6])
-            translate([3,0.2,0]) rotate([10,0,0])
-                linear_extrude(33) square([16,34]);
+            if (USE_LEDGE) {
+                translate([132,52.2,HT-6])
+                translate([3,0.2,0]) rotate([10,0,0])
+                    linear_extrude(33) square([16,34]);
+            }
             
             // cut out for PCB, 2mm deep
             // needs a tiny bit of play, so add small offset 
@@ -102,6 +107,7 @@ module base() {
             translate([130,36.5,HT-5])
             linear_extrude(10) square([10,6]);
   
+            // hollow out the center
             linear_extrude(HT) offset(r=-5) crkbd2d();
             
             // usb hole

@@ -55,7 +55,7 @@ module chop(t=[0,0,0],r=[0,0,0])
         rotate(r)
 
         children();
-        color("red") translate([-50,-50,-HT]) linear_extrude(HT) square(500);
+        color("red") translate([-500,-500,-HT]) linear_extrude(HT) square(1000);
     }
 }
 
@@ -88,7 +88,7 @@ module screw_holes(R=1.3, R2=3, HT=25) {
 
 // four holes for magnets
 // subtract out as necessary
-module magnets() {
+module magnets(SCREWS=true) {
     MAG_R = 4.2;  // 4.05 was a a little too tight
     SMALL_R = 1.5;
     BIG = 50;
@@ -100,7 +100,9 @@ module magnets() {
     for(m=MAGNETS)
         translate(m) {
             translate([0,0,MAG_H-BIG]) cylinder(r=MAG_R,h=BIG);
-            cylinder(r=SMALL_R, h=BIG);
+            if (SCREWS) {
+                cylinder(r=SMALL_R, h=BIG);
+            }
         }
 }
 
@@ -149,7 +151,7 @@ module top_plate() {
 //
 // this is about 3.9mm thick
 //
-module crkbd3d() {
+module crkbd3d(SCREWS=true) {
       
     difference() {
 
@@ -166,10 +168,10 @@ module crkbd3d() {
 
 // 2d projection of the botom plate
 // there are no screw holes
-module crkbd2d() {
+module crkbd2d(SCREWS=true) {
     projection() {
-        crkbd3d();
-       screw_holes(); 
+        crkbd3d(SCREWS=SCREWS);
+        screw_holes(); 
     }
 }
 

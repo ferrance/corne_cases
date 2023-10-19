@@ -129,12 +129,57 @@ module corne_1_3()
         linear_extrude(100) projection() chop() rotate([15,0,0]) lcd_1_3();
     }            // the original corne cover
     difference() {
-        color("red") translate([20,31.7,0]) import("oled_cover.stl");
+        color("red") translate([20,31.7,0]) import("../input/oled_cover.stl");
             // cutout for wires
             translate([12,28,-0.01])
                 linear_extrude(10) square([12,5]);
     }                        
 }
 
-whole_thing();
+module corne_1_3b()
+{
+    TENT = -20;
+
+    
+    /*
+    intersection() 
+    {
+        rotate([15,0,0]) lcd_1_3(30);
+        linear_extrude(100) projection() chop() rotate([15,0,0]) lcd_1_3();
+    } 
+    */
+    difference() {
+    translate([0,0,10]) rotate([0,-TENT,0]) {
+        // the original corne cover
+        translate([.2,0,-11])
+        rotate([0,TENT,0])
+        difference() {
+            color("red") 
+                translate([20,31.7,0]) import("../input/oled_cover.stl");
+            // cutout for wires
+            translate([12,28,-0.01])
+                linear_extrude(10) square([12,5]);
+        }                        
+
+        translate([0,0,-5]) intersection() 
+        {
+            rotate([15,0,0]) lcd_1_3(30);
+            translate([0,0,-5]) linear_extrude(100) projection() chop() rotate([15,0,0]) lcd_1_3();
+        } 
+
+//        rotate([15,0,0]) lcd_1_3(30);
+    }
+    translate([-1,-10,-50.4]) cube([17.5,100,50]);
+    
+        translate([17,0,-0.6])
+    rotate([0,-TENT,0]) color("blue") 
+        translate([-1,-10,-10]) cube([50,100,10]);
+
+    }
+
+
+}
+
+//whole_thing();
 //corne_1_3();
+corne_1_3b();

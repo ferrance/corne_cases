@@ -1,9 +1,31 @@
 ![image of crkbd](/images/corne_feet.jpg)
 
 These are the various ways I have built my [corne keyboads](https://github.com/foostan/crkbd).
+Over time it has evolved into more of a toolkit for corne-related projects in OpenSCAD.
 
 # Source files
 
+
+## crkbd.scad
+
+### crkbd3d(SCREWS=true)
+
+This creates a bottom plate. It starts with the backplate_nofeet.stl file,
+which it moves to a standard position in the upper right quadrant. It then
+cuts out the screw holes. Doing this widens them slightly and makes sure that 
+they are in the exact same spots as anything else done by this API.
+
+
+### crkbd2d(SCREWS=true)
+
+This creates a 2d profile of the PCB. The SCREWS parameter
+controls whether or not it will include holes for the five
+standoffs that the PCB allows for. The 2D profile is useful 
+for making more complicated shapes.
+
+This is basically a projection of crkbd3d().
+
+## stl files
 The project can be built from 3 files:
 - corne_feet.scad
 - cherryplate.stl
@@ -12,6 +34,14 @@ The project can be built from 3 files:
 The two STLs come from: https://thingiverse.com/thing:4459741
 
 The scad file generates all of the other STLs.
+
+# Projects
+
+## stl-feet
+
+## Pillars
+
+## Case
 
 # STL Files
 

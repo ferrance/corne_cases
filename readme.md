@@ -8,6 +8,8 @@ Over time it has evolved into more of a toolkit for corne-related projects in Op
 
 ## crkbd.scad
 
+This is the main library file that all of the projects are built on.
+
 ### crkbd3d(SCREWS=true)
 
 This creates a bottom plate. It starts with the backplate_nofeet.stl file,
@@ -41,8 +43,23 @@ The scad file generates all of the other STLs.
 
 ## Pillars
 
+This is sort of a bottom plate. It contains five pillars that are 
+extruded 20 degrees around an axis to give it 20 degrees of tenting.
+The pillars have holes that you can screw M2 screws into. I didn't 
+thread these, they are just small enough that the screw will to that 
+for you. The screws are meant to go down through the top plate and PCB
+directly into the 3D printed object. 
+
+I am using this with a fairly strange corne that i built with the 
+controller on the bottom. It accomodates that nicely. This board 
+also uses a 1.3" OLED. There is a separate mount for that included
+in the project. But it would work just fine with normal OLEDs and controllers.
+
 ## Case
 
+A quick and dirty box to store a corne in for travel. Before I built
+this I actually lost a keyswitch and keycap when pulling the board out 
+of a pocket in my laptop case. This should fix that.
 # STL Files
 
 - keyplate.stl

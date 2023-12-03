@@ -11,6 +11,8 @@
 //
 // 2023 09 05    adding round_magnets()
 //
+// 2023 12 02    added holes for underglow, refactoring
+//
 // Assumes these files are present:
 //   - backplate_nofeet.stl (3.5mm tall)
 //   - cherryplate.stl (4.5mm tall)
@@ -102,7 +104,7 @@ module one_piece() {
 // allow height adjustment
 // then chop off everything below z=0
 //
-module base_plate(ht=3,tent=0,tilt=0,MAGNETS=true,ZOFS=0) {
+module base_plate(ht=3,tent=0,tilt=0,MAGNETS=true,ZOFS=0,UNDERGLOW=true) {
     BIG = 40;
     
     chop(t=[0,0,ht-BIG+ZOFS], r=[tilt, -tent, 0] )
@@ -114,6 +116,9 @@ module base_plate(ht=3,tent=0,tilt=0,MAGNETS=true,ZOFS=0) {
                 translate([0,0,BIG-ht]) magnets();
             }
             screw_holes(HT=BIG);
+            
+            if (UNDERGLOW) 
+                underglow();
             
             // remove material for aesthetics and maybe print time
             if (true) {
@@ -203,6 +208,8 @@ module round_magnets(ht=3,tent=0,tilt=0) {
 //
 //base_plate(); // flat base plate with magnets
 //base_plate(3.5,5,5,false,-4); // tented,tilted plate w/o mags
+base_plate(UNDERGLOW=true);
+
 
 // The top plate for cherry mx switches
 // The only thing this changes from the original is to
@@ -224,4 +231,4 @@ module round_magnets(ht=3,tent=0,tilt=0) {
 
 
 
-round_magnets(2,15,5);
+//round_magnets(2,15,5);

@@ -1,6 +1,6 @@
 use <../crkbd.scad>
 
-FN=20;
+FN=120;
 $fn=FN;
 
 
@@ -16,8 +16,19 @@ module holes(R=1.3, R2=3, HT=25, HOLES=[]) {
     }
 }   
 
+// This does most of the work for the stand. Even the base
+// is just a hull of the pillars
+// 
+// there are some clearance issues at the attachment points 
+// that require the ends that touch the board to be small
+// 
+// I deal with this by extruding slightly less degrees for the 
+// thick part. Original was 20/18
+//
 module pillars() {
 
+    TENT = 15;  // degree of tenting
+    
     h_big = [ [96.5,72.1], 
               [63.7,32.4], [110.2,24.5]
     ];
@@ -28,32 +39,36 @@ module pillars() {
     
     // the thick parts
     rotate([90,0,0])
-    rotate_extrude(angle=18, $fn=FN)
+    rotate_extrude(angle=TENT-2, $fn=FN)
         projection() holes(R=1.1, R2=5, HT=.2, HOLES=h_big);
 
     // the thick parts
     rotate([90,0,0])
-    rotate_extrude(angle=20, $fn=FN)
+    rotate_extrude(angle=TENT, $fn=FN)
         projection() holes(R=1.1, R2=3, HT=.2, HOLES=h_small);
 
 }
 
 module stand(ht=5) 
 {
+    // base
     translate([0,0,-ht])
-    linear_extrude(ht)
-        offset(r=5) hull() projection() pillars();
+        linear_extrude(ht)
+            offset(r=5) hull() projection() pillars();
 
+    // pillars
     pillars();
 }
 
 module whole_thing() 
 {
-    // stand 6.5, angle 5 degrees currently
+    // stand 6.5 mm high, angle 5 degrees currently
     difference() {
         translate([0,80,0])
-        stand(6.5);
+            stand(6.5);
 
+        // subtract out this rotated flat surface to add some 
+        // tilt to the stand
         translate([0,-10,-17])
         color("red") rotate([5,0,0]) cube([200,200,10]);
 
@@ -180,6 +195,6 @@ module corne_1_3b()
 
 }
 
-//whole_thing();
+whole_thing();
 //corne_1_3();
-corne_1_3b();
+//corne_1_3b();

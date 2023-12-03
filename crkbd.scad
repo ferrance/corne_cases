@@ -106,6 +106,28 @@ module magnets(SCREWS=true) {
         }
 }
 
+// six holes for the underglow LEDs
+module underglow()
+{
+    LEDS = [ 
+                // pinky
+               [27,46,0],
+               [27,66,0],
+    
+                // middle
+               [65,35,0],
+               [65,72.5,0],
+    
+                // index
+               [103,29.5,0],
+               [103,68,0]
+            ];
+
+    for (l=LEDS)
+        translate(l)
+            cube([6,6,100]);
+}
+
 module top_plate() {
 
     chop() 
@@ -116,7 +138,7 @@ module top_plate() {
             rotate([0,180,0])
             translate([0, 31, 0 ]) 
                 mirror([0,1,0])
-                    import("cherryplate.stl");
+                    import("input/cherryplate.stl");
             
             // fill in the screw holes in the input STL,
             // we will remove them again below
@@ -158,7 +180,7 @@ module crkbd3d(SCREWS=true) {
         translate([2,0,3.5]) rotate([0,180,0])
             translate([0, 31, 0 ]) 
                 mirror([0,1,0])
-                    import("backplate_nofeet.stl");
+                    import("input/backplate_nofeet.stl");
         
         // widen the screw holes
         screw_holes(HT=BASE_THICKNESS);
